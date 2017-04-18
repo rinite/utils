@@ -1,4 +1,3 @@
-#SUDO
 sudo sh "more /home/wassvc/.profle"
 sudo su - wassvc
 
@@ -8,14 +7,19 @@ scp -p dqdev@s10apl01:/install/IDQ/platform/961HF2_Server_Installer_linux-x64.ta
 #Verificar distribuição e release
 lsb_release -a
 
+
 #VERIFICAR VARIAVEIS DE AMBIENTE
 printenv
+ou 
 env
 
 #Dividir arquivos por numero de registros
 nohup split -l 70000000 dbo.Pessoa_Juridica.Table.Data.dat &
 
-#Executa comandos com outro user
+#ALTERA PASTA DE ARQUIVOS TEMPORARIOS
+export IATEMPDIR=/opt/IBM/tmp
+
+#INICIALIZA BANCO DE DADOS
 su oracle -c "$ORACLE_HOME/bin/dbstart $ORACLE_HOME"
 
 #INSTALA SSH SFTP FTP NO REDHAT
@@ -25,6 +29,7 @@ sudo apt-get install openssh-server
 su -c 'yum update'
 
 #instalar rpm
+
 rpm -Uvh jdk-7u45-linux-x64.rpm
 
 #UTILIZA ATALHOS COMO NO VI
@@ -84,6 +89,7 @@ recode utf-8..iso-latin1 arquivo
 recode iso-latin1..utf-8 arquivo 
 
 #Também é possível usar o programa iconv, que é um programinha interpretador de códigos: 
+
 iconv -f UTF-8 -t ISO-8859-1 arquivo-utf > arquivo-iso
 iconv -f ISO-8859-1 -t UTF-8 arquivo-iso > arquivo-utf 
 
@@ -286,8 +292,16 @@ awk -F ";" '{ printf "%011i,%s,%s,%s\n",$1,$2,$3,$4 }' <arquivo.txt>
 awk -F "|" '{ printf "%s|%s|%s|%s\n",$1,$2,$3,$4 }' tst_controle
 awk -F "|" '{printf "%s\n",$3}' tst_controle
 
+#Uppercase
+str="Some string"
+echo $str | awk '{print toupper($0)}'
+
+
 #Encontra diretorios mais velhos que 5 dias
 find ./ -maxdepth 1 -type d -mtime +5 -exec echo "teste" {} \;
+
+#Encontra apenas arquivos em uma pasta
+find . -maxdepth 1 -type f
 
 #Verifica erro em uma linha sobre
 # : No Op 
@@ -359,3 +373,44 @@ if [ -f CONTROLE_REMESSA_ENVIA_PARCEIRO.TXT ]
 original_string='i love Suzi and Marry'
 string_to_replace_Suzi_with=Sara
 result_string="${original_string/Suzi/$string_to_replace_Suzi_with}"
+
+
+
+#Unzip
+Usage: unzip [-Z] [-opts[modifiers]] file[.zip] [list] [-x xlist] [-d exdir]
+  Default action is to extract files in list, except those in xlist, to exdir;
+  file[.zip] may be a wildcard.  -Z => ZipInfo mode ("unzip -Z" for usage).
+
+  -p  extract files to pipe, no messages     -l  list files (short format)
+  -f  freshen existing files, create none    -t  test compressed archive data
+  -u  update files, create if necessary      -z  display archive comment only
+  -v  list verbosely/show version info       -T  timestamp archive to latest
+  -x  exclude files that follow (in xlist)   -d  extract files into exdir
+modifiers:
+  -n  never overwrite existing files         -q  quiet mode (-qq => quieter)
+  -o  overwrite files WITHOUT prompting      -a  auto-convert any text files
+  -j  junk paths (do not make directories)   -aa treat ALL files as text
+  -U  use escapes for all non-ASCII Unicode  -UU ignore any Unicode fields
+  -C  match filenames case-insensitively     -L  make (some) names lowercase
+  -X  restore UID/GID info                   -V  retain VMS version numbers
+  -K  keep setuid/setgid/tacky permissions   -M  pipe through "more" pager
+
+
+ #REMOVE FILES BUT NOT DIRECTORIES FROM A FOLDER
+ You can use find with -type f for files only and -maxdepth 1 so find wont search for files in sub-directories of /path/to/directory.  rm -i will prompt you on each delete so you can confirm or deny the delete. If you dont care about being asked for confirmation of each delete, change it to rm -fv (-f for force the delete). The -v flag makes it so that with each delete, a message is printed saying what file was just deleted.
+
+find /path/to/directory -type f -maxdepth 1 -exec rm -iv {} \;
+This should meet the criteria:
+
+NOT directories 
+NOT subdirectories 
+NOT files in these subdirectories.
+
+
+#Le arquivo e fixa tamanho fixtam
+cat AL_empresa.dat | tr -d '\r' | awk '{ printf "%-900s\n" , $0 }' > teste
+cat AL_empresa.dat | tr -d '\r' | awk '{ printf "%-9999s\n" , $0 }' | cut -b1-800 > teste
+
+#verificar tamanho da linhaawk '{print length($0);}' AL_empresa.dat.fix
+awk '{print length($0);}' AL_empresa.dat.fix
+
