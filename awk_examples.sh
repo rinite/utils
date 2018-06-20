@@ -26,3 +26,16 @@ echo "qwertyuiop" | gawk -v FIELDWIDTHS="3 2 4" '{ print $1"| $2"|" $3  }'
 #saida
 qwe|rt|yuio
 
+#leitura de variaveis no awk
+while read device
+do
+    awk -F '\n' '{ printf ("%s\t%s\t%s\t%s\t%s\n", myDevice, substr($1,1,6), substr($1,43,5), substr($1,11,18), substr($1,30,10)) }' myDevice="${device}" $device.clean
+done < device.txt
+
+#utilizacao de if
+awk -F"|" '{ if ( $5 == "00000003" ) { print $0 } }' entrada.txt > saida.txt
+
+#realiza contagem de uma coluna
+awk -F "|" '{ print $6 }' arquivo.txt  | sort -T . | uniq -c
+
+
