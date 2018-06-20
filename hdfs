@@ -1,3 +1,4 @@
+#diretórios uteis
 hdfs dfs -ls /work/sistema/cadastral/esteira/qualidade_saida/CADASTRO
 hdfs dfs -ls /work/sistema/cadastral/esteira/qualidade_saida/DOCUMENTO
 hdfs dfs -ls /work/sistema/cadastral/esteira/qualidade_saida/EMAIL
@@ -13,6 +14,9 @@ hdfs dfs -get /work/sistema/cadastral/esteira/qualidade_saida/CADASTRO/SEQ_OUT_D
 #move
 hdfs dfs -mv /work/sistema/cadastral/esteira/qualidade_saida/CADASTRO/SEQ_OUT_NOME_DQ.TXT "/work/sistema/cadastral/esteira/qualidade_saida/CADASTRO/SEQ_OUT_NOME_DQ_`date +"%Y%m%d_%H%M%S"`.TXT"
 hdfs dfs -mv /work/sistema/cadastral/esteira/qualidade_saida/EMAIL/SEQ_OUT_EMAIL_DQ.TXT "/work/sistema/cadastral/esteira/qualidade_saida/EMAIL/SEQ_OUT_EMAIL_DQ_`date +"%Y%m%d_%H%M"`.TXT"
+
+#remove arquivos zerados
+hdfs dfs -ls -R /work/sistema/cadastral/esteira/qualidade_saida | awk '$1 !~ /^d/ && $5 == "0" { print $8 }' | xargs -n100 hdfs dfs -rm
 
 #delete
 hdfs dfs -rm [-skipTrash]
