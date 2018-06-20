@@ -21,8 +21,11 @@ hdfs dfs -ls -R /work/sistema/cadastral/esteira/qualidade_saida | awk '$1 !~ /^d
 #delete
 hdfs dfs -rm [-skipTrash]
 
+#realiza contagem de colunas
+ hdfs dfs -cat ${ARQ} | awk -F"|" '{ print $34 }' | sort -T . | uniq -c
+
+#Manual Hadoop Hadoop
 Apache > Hadoop > Core >
-Hadoop Hadoop
 
 Search the site with google
   
