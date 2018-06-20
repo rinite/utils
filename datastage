@@ -1,0 +1,140 @@
+#replace strings
+trim (trim (trim (
+Ereplace(Ereplace(Ereplace(Ereplace(Ereplace(Ereplace(Ereplace(Ereplace(Ereplace(Ereplace(Ereplace(Ereplace(Ereplace(Ereplace(Ereplace(Ereplace( 
+downcase(LnkLeituraEmail.ENDR_CORR_ELTR ) 
+, "," , "" ), "/" , "" ), "\" , "" ), "(" , "" ), ")" , "" ), "[" , "" ), "]" , "" ), "*" , "" ), "|" , "" ), "?" , "" ), "!" , "" ), "#" , "" )"
+, "$" , "" ), "%" , "" ), "+" , "" ), "^" , "" ), " " ),".","B" )
+,"-","B" )
+
+#conta string
+Count(DSLink2.EMAIL,"@")
+
+#exemplo if
+IF substringing(lcase(email), tam-6 , 7) contains ".com.br" 
+then flag = "S" 
+else flag = "N"
+
+IF lcase(email) contains ".com.br" 
+then flag = "S" 
+else flag = "N"
+
+#verifica primeira posição
+If 
+VarEmailTmp[0.1] = "." or 
+VarEmailTmp[0.1] = "-" or 
+VarEmailTmp[0.1] = "@" 
+Then VarFormatoInvalido = "S"
+Else VarFormatoInvalido = "N"
+
+If
+VarEmailTmp[1,1] = 'q' or
+VarEmailTmp[1,1] = 'w' or
+VarEmailTmp[1,1] = 'e' or
+VarEmailTmp[1,1] = 'r' or
+VarEmailTmp[1,1] = 't' or
+VarEmailTmp[1,1] = 'y' or
+VarEmailTmp[1,1] = 'u' or
+VarEmailTmp[1,1] = 'i' or
+VarEmailTmp[1,1] = 'o' or
+VarEmailTmp[1,1] = 'p' or
+VarEmailTmp[1,1] = 'a' or
+VarEmailTmp[1,1] = 's' or
+VarEmailTmp[1,1] = 'd' or
+VarEmailTmp[1,1] = 'f' or
+VarEmailTmp[1,1] = 'g' or
+VarEmailTmp[1,1] = 'h' or
+VarEmailTmp[1,1] = 'j' or
+VarEmailTmp[1,1] = 'k' or
+VarEmailTmp[1,1] = 'l' or
+VarEmailTmp[1,1] = 'z' or
+VarEmailTmp[1,1] = 'x' or
+VarEmailTmp[1,1] = 'c' or
+VarEmailTmp[1,1] = 'v' or
+VarEmailTmp[1,1] = 'b' or
+VarEmailTmp[1,1] = 'n' or
+VarEmailTmp[1,1] = 'm' or
+VarEmailTmp[1,1] = '1' or
+VarEmailTmp[1,1] = '2' or
+VarEmailTmp[1,1] = '3' or
+VarEmailTmp[1,1] = '4' or
+VarEmailTmp[1,1] = '5' or
+VarEmailTmp[1,1] = '6' or
+VarEmailTmp[1,1] = '7' or
+VarEmailTmp[1,1] = '8' or
+VarEmailTmp[1,1] = '9' or
+VarEmailTmp[1,1] = '0'
+Then 'N'
+Else 'S'
+
+#obtem string declarando separador
+VarUser
+VarEmailTmp ["@" , 1 , 1  ]
+Atributo["separador" , posicao , tamanho ] 
+
+VarDomain
+VarEmailTmp ["@" , 2 , 1  ]
+Atributo["separador" , posicao , tamanho ] 
+
+#obtem posição de um atributo
+VarPosArroba
+Index(VarEmailTmp,'@',1)
+
+#contador de ocorrencias de uma string
+VarCountArroba
+Count(atributo , "string" ) 
+
+#converte lista de strings
+Convert('qwertyuiopasdfghjklzxcvbnm`~!@#$%^&*()-_=+[{]}\|;:,<.>/? ',' ', DSLink2.CPF_In)
+ 
+#alinha com zeros a esquerda
+trim(atributo , '0' , 'L')
+Trim (Convert('qwertyuiopasdfghjklzxcvbnm`~!@#$%^&*()-_=+[{]}\|;:,<.>/? ',' ', DSLink2.CPF_In) , '0' , 'L') 
+  
+
+#Concatenar / Concatenat / Cat
+atributo : atributo2
+ 
+#obtem as duas ultimas letras
+Right(Trim(NullToEmpty(atributo)),2)
+
+#remove acentuacao
+'ÁÉÍÓÚÂÊÎÔÛÃÕÇÜÀÈÌÒÙ' - stgvarIN
+'AEIOUAEIOUAOCUAEIOU' - stgvarOUT
+Convert(stgvarIN , stgvarOUT , Trim(Upcase(atributo)))
+
+#remove alphanumerico
+Convert('qwertyuiopasdfghjklzxcvbnm','', atributo)
+
+###### Array para geração de scripts
+declare -a array1=("JDQ0001_CADASTRO_02_PADRONIZA_DSC_NCLD")
+
+#for de geracao do script
+for x in "${array1[@]}"
+do
+cat > ./$x.sh << OEF
+#!/bin/bash
+# script $x gerado automaticamente
+set -uo pipefail
+JOB="$x"
+. \${BASH_SOURCE[0]%/*}/lib/log.sh
+. \${BASH_SOURCE[0]%/*}/lib/bvs.sh
+. \${BASH_SOURCE[0]%/*}/config/global.properties
+cleanup(){
+  echo "Remove arquivos de log com mais de 30 dias" | LSDEBUG | tee -a \$LOG_PROC
+  control:removeOldFolders
+  echo "Remove caracteres de cores do log" | LSDEBUG | tee -a \$LOG_PROC
+  clean:logExec
+}
+trap cleanup EXIT
+echo "Inicio da execucao do JOB \$JOB" | LSINFO | tee -a \$LOG_PROC
+/u1/PROD/PGMS/PGMSQS85 PROJETO=Cadastral JOB=\$JOB | tee -a \$LOG_PROC
+codret=\$?
+if [ ! \$codret -eq 0 ] ; then
+  echo "Erro ao executar \$JOB. Verifique o log completo de execução." | LSCRITICAL | tee -a \$LOG_PROC
+  exit \$codret
+fi
+echo "Job executado com sucesso." | LSINFO | tee -a \$LOG_PROC
+exit \$codret
+OEF
+chmod 755 ./$x.sh
+done
