@@ -1,3 +1,12 @@
+#Information server yarn start/stop
+#stop
+cd /u0/IBM/InformationServer/Server/PXEngine/etc/yarn_conf
+./stop-pxyarn.sh
+
+#start
+cd /u0/IBM/InformationServer/Server/PXEngine/etc/yarn_conf
+./start-pxyarn.sh
+
 #replace strings
 trim (trim (trim (
 Ereplace(Ereplace(Ereplace(Ereplace(Ereplace(Ereplace(Ereplace(Ereplace(Ereplace(Ereplace(Ereplace(Ereplace(Ereplace(Ereplace(Ereplace(Ereplace( 
