@@ -24,6 +24,10 @@ hdfs dfs -rm [-skipTrash]
 #realiza contagem de colunas
  hdfs dfs -cat ${ARQ} | awk -F"|" '{ print $34 }' | sort -T . | uniq -c
 
+#extração de dados hive
+hive -e 'select * from your_Table' | sed 's/[\t]/,/g'  > /home/yourfile.csv
+hive -e 'set hive.cli.print.header=true; select * from your_Table' | sed 's/[\t]/,/g'  > /home/yourfile.csv
+
 #Manual Hadoop Hadoop
 Apache > Hadoop > Core >
 
