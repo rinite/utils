@@ -27,6 +27,8 @@ echo "qwertyuiop" | gawk -v FIELDWIDTHS="3 2 4" '{ print $1"| $2"|" $3  }'
 qwe|rt|yuio
 
 #leitura de variaveis no awk
+awk -v co="$count" '{if ($1 == co) print $2 }'` 
+
 while read device
 do
     awk -F '\n' '{ printf ("%s\t%s\t%s\t%s\t%s\n", myDevice, substr($1,1,6), substr($1,43,5), substr($1,11,18), substr($1,30,10)) }' myDevice="${device}" $device.clean
